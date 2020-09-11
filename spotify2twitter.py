@@ -1,13 +1,9 @@
-import os
-import sqlite3
+import os, sqlite3, requests, json, ctypes
 import http.cookiejar as cookielib
 from requests.utils import dict_from_cookiejar
-import requests
 from configparser import ConfigParser
-import json
 from time import sleep
-import ctypes
-from ctypes import *
+from ctypes import c_int,c_bool
 from urllib.parse import quote
 
 user32 = ctypes.WinDLL('user32', use_last_error = True)
@@ -17,7 +13,6 @@ EnumChildWindows = user32.EnumChildWindows
 EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int))
 
 GetWindowText = user32.GetWindowTextW
-SetWindowText = user32.SetWindowTextW
 GetWindowTextLength = user32.GetWindowTextLengthW
 
 clear = lambda: os.system('cls')
@@ -27,7 +22,7 @@ class spotify2twitter:
     newLine = "%0a"
     currentBio = "%23bestable" + newLine
     headphoneEmoji = "\xF0\x9F\x8E\xA7 "
-    
+
     def __init__(self):
         firefoxConfig = ConfigParser()
         firefoxConfig.read(os.getenv('APPDATA')+r"\Mozilla\Firefox\profiles.ini")
@@ -58,15 +53,12 @@ class spotify2twitter:
 
     def run(self):  
         self.get_cookies()
-
         while self.spotifyWindow is None:
             self.print("[*] Open Spotify or Pause Music...", mclear=True)
             self.findWindow()
             sleep(1)
-            
         self.findWindowTitle()
         cache = self.spotifyWindowTitle
-
         while True:
             self.findWindowTitle()
             if self.spotifyWindowTitle != cache and self.spotifyWindowTitle != "Spotify Free":
@@ -84,7 +76,7 @@ class spotify2twitter:
             GetWindowText(hwnd, mbuff, length + 1)
             if("Spotify" in mbuff.value):
                 self.spotifyWindow = hwnd
-                self.print("[*] Searching For Songs...", mclear=True)
+                self.print("[*] Searching For Music...", mclear=True)
                 return False
             return True
         EnumWindows(EnumWindowsProc(foreach_window), 0)
