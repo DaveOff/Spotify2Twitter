@@ -93,7 +93,7 @@ class spotify2twitter:
     def setDefaultBio(self):
         self.request(self.currentBio)
 
-    def request(self, song):
+    def request(self, text):
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-twitter-auth-type': 'OAuth2Session',
@@ -104,7 +104,7 @@ class spotify2twitter:
             'Referer': 'https://twitter.com/settings/profile',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0'
         }
-        response = requests.post('https://api.twitter.com/1.1/account/update_profile.json', data="displayNameMaxLength=50&description="+song, cookies=self.cookie_jar, headers=headers)
+        response = requests.post('https://api.twitter.com/1.1/account/update_profile.json', data="displayNameMaxLength=50&description="+text, cookies=self.cookie_jar, headers=headers)
 
         if response.ok is False :
             if response.status_code == 429 : raise Exception("[Request] Refresh Twitter Web Page")
